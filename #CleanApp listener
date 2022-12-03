@@ -1,0 +1,14 @@
+// Define a listener that will automatically tag tweets that include the #CleanApp hashtag
+val listener = new StatusAdapter {
+  override def onStatus(status: Status) {
+    if (status.getText.contains("#CleanApp")) {
+      val lat = status.getGeoLocation.getLatitude
+      val long = status.getGeoLocation.getLongitude
+      val photos = status.getMediaEntities.map(_.getMediaURL)
+      sendDumpsiteTweet(lat, long, photos)}
+   }
+}
+
+// Start the Twitter stream and add the listener
+twitterStream.addListener(listener)
+twitterStream.user()
