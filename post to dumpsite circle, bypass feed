@@ -1,0 +1,50 @@
+import twitter4j._
+
+// Set up the Twitter API with the appropriate authentication keys
+val twitter = new TwitterFactory().getInstance()
+
+// Define the Twitter Circle that will collect the dumpsite data
+val dumpsiteDataCircle = twitter.createCircle("DumpsiteData")
+
+// Option A: Define a function that allows a user to send a tweet with the location of a dumpsite
+def sendDumpsiteTweet(lat: Double, long: Double) {
+  // Create the tweet with the location of the dumpsite
+  val tweet = new StatusUpdate(s"Dumpsite detected at ($lat, $long)")
+  tweet.setLocation(new GeoLocation(lat, long))
+
+// Option B: Define a function that allows a user to send a tweet with the location of a dumpsite and photo(s)
+def sendDumpsiteTweet(lat: Double, long: Double, photo: Option[String]) {
+  // Create the tweet with the location of the dumpsite and the photo (if provided)
+  val tweet = new StatusUpdate(s"Dumpsite detected at ($lat, $long)")
+  tweet.setLocation(new GeoLocation(lat, long))
+  photo.foreach(tweet.setMedia(_))
+
+  // Send the tweet to the DumpsiteData Circle, bypassing the user's feed
+  twitter.updateStatus(tweet, dumpsiteDataCircle)
+
+  // If a photo was included, download and store it
+  photo.foreach { url =>
+    val photoFile = new File("dumpsite_photo.jpg")
+    val response = Http(url).asBytes
+    Files.write(response.body, photoFile)
+    }
+    
+// Option C: 
+def sendDumpsiteTweet(lat: Double, long: Double, photos: List[String]) {
+  // Create the tweet with the location of the dumpsite and the photos (if provided)
+  val tweet = new StatusUpdate(s"Dumpsite detected at ($lat, $long)")
+  tweet.setLocation(new GeoLocation(lat, long))
+  photos.foreach(tweet.setMedia(_))
+
+  // Upload the photos to Twitter's servers (if provided)
+  val media = photos.map(twitter.uploadMedia(_))
+
+  // Send the tweet to the DumpsiteData Circle, bypassing the user's feed
+  // Include the uploaded photos (if provided) in the tweet
+  media.foreach(tweet.setMediaId)
+  twitter.updateStatus(tweet, dumpsiteDataCircle)
+  
+}
+
+
+
