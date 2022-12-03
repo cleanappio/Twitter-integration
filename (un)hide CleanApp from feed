@@ -1,0 +1,24 @@
+def sendDumpsiteTweet(lat: Double, long: Double, photos: List[String]) {
+  // Create the tweet with the location of the dumpsite and the photos (if provided)
+  val tweet = new StatusUpdate(s"Dumpsite detected at ($lat, $long)")
+  tweet.setLocation(new GeoLocation(lat, long))
+  photos.foreach(tweet.setMedia(_))
+
+  // Upload the photos to Twitter's servers (if provided)
+  val media = photos.map(twitter.uploadMedia(_))
+
+  // Set the visibility of the tweet to be hidden from the user's feed and the public
+  tweet.setVisibility(Twitter.Visibility.PRIVATE)
+
+  // Send the tweet to the DumpsiteData Circle, bypassing the user's feed
+  // Include the uploaded photos (if provided) in the tweet
+  media.foreach(tweet.setMediaId)
+  twitter.updateStatus(tweet, dumpsiteDataCircle)
+}
+
+// Define a function that allows the user to view their tweets to the DumpsiteData Circle
+def viewDumpsiteTweets() {
+  // Get the user's timeline, filtering for tweets sent to the DumpsiteData Circle
+  val tweets = twitter.getUserTimeline.filter(_.getCircleIds.contains(dumpsiteDataCircle.getId))
+
+  // Print the text of
