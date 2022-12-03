@@ -1,0 +1,45 @@
+import twitter4j._
+
+// Set up the Twitter API with the appropriate authentication keys
+val twitter = new TwitterFactory().getInstance()
+
+// Define the Twitter Circle that will collect the Dumpsite data
+val dumpsiteDataCircle = twitter.createCircle("DumpsiteData")
+
+// Define a function that allows a user to send a tweet with the location of a Dumpsite
+def sendDumpsiteTweet(lat: Double, long: Double, photos: List[String]) {
+  // Create the tweet with the location of the Dumpsite and the photos (if provided)
+  val tweet = new StatusUpdate(s"Dumpsite detected at ($lat, $long)")
+  tweet.setLocation(new GeoLocation(lat, long))
+  photos.foreach(tweet.setMedia(_))
+
+  // Upload the photos to Twitter's servers (if provided)
+  val media = photos.map(twitter.uploadMedia(_))
+
+  // Set the visibility of the tweet to be hidden from the user's feed and the public
+  tweet.setVisibility(Twitter.Visibility.PRIVATE)
+
+  // Send the tweet to the DumpsiteData Circle, bypassing the user's feed
+  // Include the uploaded photos (if provided) in the tweet
+  media.foreach(tweet.setMediaId)
+  twitter.updateStatus(tweet, dumpsiteDataCircle)
+}
+
+// Set up a Twitter stream to monitor the user's tweets in real-time
+val twitterStream = new TwitterStreamFactory().getInstance()
+
+// Define a listener that will automatically tag tweets that include the #CleanApp hashtag
+val listener = new StatusAdapter {
+  override def onStatus(status: Status) {
+    if (status.getText.contains("#CleanApp")) {
+      val lat = status.getGeoLocation.getLatitude
+      val long = status.getGeoLocation.getLongitude
+      val photos = status.getMediaEntities.map(_.getMediaURL)
+      sendDumpsiteTweet(lat, long, photos)
+    }
+  }
+}
+
+// Start the Twitter stream and add the listener
+twitterStream.addListener(listener)
+twitterStream.user()
