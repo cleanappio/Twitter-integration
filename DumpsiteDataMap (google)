@@ -1,0 +1,45 @@
+// Include the Google Maps and Twitter libraries in your project
+import com.google.maps._
+import twitter4j._
+
+// Initialize the Google Maps and Twitter APIs with the appropriate authentication keys
+val googleMaps = new GoogleMaps()
+val twitter = new TwitterFactory().getInstance()
+
+// Define a case class that represents a Dumpsite data tweet
+case class DumpsiteData(lat: Double, long: Double, text: String, photos: List[String])
+
+// Define a function that retrieves the Dumpsite data tweets from the DumpsiteData Circle
+// and parses the data to extract the latitude, longitude, and other relevant information
+def getDumpsiteTweets(): List[DumpsiteData] = {
+  // Retrieve the tweets from the DumpsiteData Circle
+  val tweets = twitter.getCircleTweets("DumpsiteData")
+
+  // Parse the data from the tweets to extract the latitude, longitude, and other relevant information
+  tweets.map(t => DumpsiteData(
+    t.getGeoLocation.getLatitude,
+    t.getGeoLocation.getLongitude,
+    t.getText,
+    t.getMediaEntities.map(_.getMediaURL)
+  ))
+}
+
+// Define a function that adds markers to the map at the locations of the Dumpsites
+// and creates an overlay that shows the Dumpsite data on the map
+def showDumpsiteDataOnMap(map: Map, dumpsiteData: List[DumpsiteData]): Map = {
+  // Add markers to the map at the locations of the Dumpsites
+  val markers = dumpsiteData.map(d => map.addMarker(new MarkerOptions()
+    .position(new LatLng(d.lat, d.long))
+    .title(d.text)
+    .snippet(d.photos.mkString(", "))
+  ))
+
+  // Create an overlay that shows the Dumpsite data on the map
+  val overlay = new CustomOverlay()
+  overlay.setData(dumpsiteData)
+  map.addOverlay(overlay)
+
+  // Return the updated map
+  map
+}
+
