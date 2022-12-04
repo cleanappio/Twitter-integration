@@ -1,0 +1,18 @@
+// Define a function that creates the map and shows the Dumpsite data on it
+def createDumpsiteDataMap(): Map = {
+  // Create the map and configure it with the appropriate options
+  val map = new Map()
+  map.setCenter(new LatLng(0.0, 0.0))
+  map.setZoom(5.0)
+  map.setMapType(MapType.ROADMAP)
+  map.setControls(MapControls.ZOOM_PAN)
+  map.addEventListener(MapEvent.CLICK, (e: MapMouseEvent) => {
+    // Handle click events on the map
+  })
+
+  // Show the Dumpsite data on the map
+  showDumpsiteDataOnMap(map, getDumpsiteTweets())
+
+  // Return the map
+  map
+}
