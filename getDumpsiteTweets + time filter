@@ -1,0 +1,15 @@
+// Define a function that retrieves the Dumpsite data tweets from the DumpsiteData Circle
+// and parses the data to extract the latitude, longitude, and other relevant information
+def getDumpsiteTweets(timeFilter: String): List[DumpsiteData] = {
+  // Retrieve the tweets from the DumpsiteData Circle
+  val tweets = twitter.getCircleTweets("DumpsiteData")
+
+  // Filter the tweets based on the specified time filter
+  val filteredTweets = timeFilter match {
+    case "1 hour" => tweets.filter(t => t.getCreatedAt >= DateTime.now().minusHours(1))
+    case "12 hours" => tweets.filter(t => t.getCreatedAt >= DateTime.now().minusHours(12))
+    case "24 hours" => tweets.filter(t => t.getCreatedAt >= DateTime.now().minusHours(24))
+    case "7 days" => tweets.filter(t => t.getCreatedAt >= DateTime.now().minusDays(7))
+    case "30 days" => tweets.filter(t => t.getCreatedAt >= DateTime.now().minusDays(30))
+    }
+  }
