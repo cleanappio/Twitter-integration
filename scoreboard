@@ -1,0 +1,19 @@
+// Track the number of tweets Earthling has sent with the #CleanApp hashtag
+val userTweets = Twitter.search(new Query("#CleanApp"))
+val userTweetsCount = userTweets.getTweets().size()
+
+// Update Earthling's profile with their total point value
+val userProfile = Twitter.showUser(userId)
+userProfile.setName("User Name")
+userProfile.setDescription("Earth ❤️: " + userTweetsCount)
+Twitter.updateProfile(userProfile)
+
+// Create a global leaderboard that displays top Earthlings based on their point value
+val leaderboard = Twitter.search(new Query("#CleanApp leaderboard"))
+val leaderboardTweets = leaderboard.getTweets()
+for (tweet in leaderboardTweets) {
+  val user = tweet.getUser()
+  val userName = user.getName()
+  val userTweetsCount = user.getDescription().split(":")[1].trim()
+  println("User: " + userName + ", Total Dumpsite Tweets: " + userTweetsCount)
+}
