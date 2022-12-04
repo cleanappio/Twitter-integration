@@ -1,0 +1,8 @@
+// Create a HeatmapTileProvider that generates the heatmap data from the DumpsiteData Circle data
+val heatmapTileProvider = new HeatmapTileProvider.Builder()
+  .data(getDumpsiteTweets().map(d => new WeightedLatLng(new LatLng(d.lat, d.long), d.weight)))
+  .build()
+
+// Create a HeatmapOverlay and add it to the map
+val heatmapOverlay = new HeatmapOverlay(heatmapTileProvider)
+map.addOverlay(heatmapOverlay)
