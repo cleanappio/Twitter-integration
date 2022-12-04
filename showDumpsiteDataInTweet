@@ -1,0 +1,9 @@
+// Define a function that embeds the map in the tweet and sends the tweet
+def showDumpsiteDataInTweet(tweet: Tweet, map: Map): Unit = {
+  // Embed the map in the tweet
+  val mediaEntity = new MediaEntity(map.getImage())
+  tweet.addMediaEntity(mediaEntity)
+
+  // Send the tweet
+  Twitter.updateStatus(new StatusUpdate(tweet))
+}
