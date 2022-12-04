@@ -6,3 +6,8 @@ val heatmapTileProvider = new HeatmapTileProvider.Builder()
 // Create a HeatmapOverlay and add it to the map
 val heatmapOverlay = new HeatmapOverlay(heatmapTileProvider)
 map.addOverlay(heatmapOverlay)
+
+// use the getDumpsiteTweets() function defined earlier to retrieve the DumpsiteData tweets 
+// and extract the latitude and longitude information from each tweet. You can then use this data 
+// to create a List<WeightedLatLng> that contains the latitude and longitude information for each 
+// Dumpsite, along with a weight value that indicates the intensity of the heat at that location.
