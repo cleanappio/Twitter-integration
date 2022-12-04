@@ -1,7 +1,11 @@
 # Twitter-integration
 Code excertps for CleanApp + Twitter integration.
 
-Extending and modifying the code to add new features and functionality. Some examples of ways that you could extend the code might include:
+(2022) Focus on core reporting integration functionality.
+
+(2023) Improved reporting, analytics, mapping functionality.
+
+(2023-2025) Potential ways to extend and modify code to add new features and functionality:
 
 - Adding support for multiple hashtags that can trigger the sendDumpsiteTweet(lat: Double, long: Double, photos: List[String]) function. This would allow users to include different hashtags in their tweets to send Dumpsite data to different Circles or to send different types of Dumpsite data.
 - Adding support for users to view their Dumpsite data tweets in the app. This could include a timeline or map view of the user's tweets, allowing them to see the location and photos of the Dumpsites that they have reported.
